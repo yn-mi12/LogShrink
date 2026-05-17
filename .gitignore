@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.o
+python_compression/parser/Elastic
+python_compression/parser/THULR
+python_compression/template/
+python_compression/running_record/
