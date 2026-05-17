@@ -58,11 +58,14 @@ def property_mining(log_seqs=None,
         # sampled_property = {"EH": [], "EE": [], "VV": []}
         tot_index = np.array([])
         for sid, idxs in sampled_seqs_index.items():
-            ori_index = np.array([range(idx*h, min((idx+1)* h, len(log_meta.eids))) for idx in idxs])
-            ori_index = np.hstack(ori_index)
+            # np.array([range(...)]) raises ValueError with numpy >=1.24 when the
+            # last sequence is shorter than h (inhomogeneous shape)
+            ranges = [np.arange(idx*h, min((idx+1)*h, len(log_meta.eids))) for idx in idxs]
+            if not ranges:
+                continue
+            ori_index = np.concatenate(ranges)
             tot_index = np.concatenate([tot_index, ori_index])
         tot_index = tot_index.astype(int)
-
         sampled_eid = log_meta.eids[tot_index]
         sampled_var = log_meta.var_list[tot_index]
         

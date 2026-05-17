@@ -14,7 +14,7 @@ if __name__ == "__main__":
     
     trucate_size = 20
     N = range(tot_count // trucate_size)
-    m = min(max(int(len(N)*sample_rate),50),50000)
+    m = min(max(int(len(N)*sample_rate), min(50, len(N))), max(len(N), 1))
     sample_count = m * trucate_size
     print("Sample for {}, tot size: {}, sample size: {}".format(input_path, tot_count, sample_count))
 
