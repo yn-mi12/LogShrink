@@ -9,8 +9,7 @@
 #define MAXHEAD 16     // Max number of header
 #define MAXHEADN 32    // Max number of header num
 #define MAXTOCKEN 2048 // The max number of tocken(including tonks )
-#define MAXCOL 256     // The number of variable(int, string)
-
+#define MAXCOL 32      // The number of variable(int, string); reduced from 256 — 5G templates have ≤6 vars
 #define LINE_LENGTH 10000000 // The length of log read buffer
 #define MAXSTRLEN 1024       // The max number of char in string parameter
 #define BUFSIZE 1024         // String reading buffer
