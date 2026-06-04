@@ -265,8 +265,15 @@ if __name__ == "__main__":
 
     if segmenting:
         mkdir(template_path)
+        # Use the full input as the training sample so Drain sees every
+        # message type.  The default sampler floor (50 chunks × 20 = 1000
+        # lines) only covers ~33% of our small 5G-core logs, causing 67% of
+        # lines to receive EID=-1 and be silently dropped during encoding.
+        # "-m Sam" skips the sampler and reads input_file + ".sample" directly.
+        import shutil as _shutil
+        _shutil.copy2(input_file, input_file + ".sample")
         train_cmd = "python3 ./parser/training.py -I " + input_file + \
-            " -T " + template_path + " -L " + str(header_length)
+            " -T " + template_path + " -L " + str(header_length) + " -m Sam"
         os.system(train_cmd)
 
         # segmenting
