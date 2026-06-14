@@ -424,9 +424,30 @@ def matching(centers, input_data, threshold, raw_index):
     return mismatch_raw_index, cluster_result
 
 
+MAX_ONEHOT_FEATURES = 300  # cap feature width to bound DataFrame / pdist memory
+
+
 def onehot_encoding(data, templates_number):
-    # t1 = time.time()
     frequency = list(map(Counter, data))
+
+    # When the template vocabulary is large, keep only the top-MAX_ONEHOT_FEATURES
+    # most-frequent IDs.  Rare templates contribute little discriminative power
+    # to the HAC clustering step but can make the DataFrame O(n × V) large.
+    if templates_number > MAX_ONEHOT_FEATURES:
+        total_freq: Counter = Counter()
+        for c in frequency:
+            total_freq.update(c)
+        keep = sorted(
+            tid for tid, _ in total_freq.most_common(MAX_ONEHOT_FEATURES)
+            if 0 <= tid < templates_number
+        )
+        id_map = {old: new for new, old in enumerate(keep)}
+        frequency = [
+            {id_map[k]: v for k, v in c.items() if k in id_map}
+            for c in frequency
+        ]
+        templates_number = len(keep)
+
     frequency.append({i: 0 for i in range(templates_number)})
     df = pd.DataFrame(frequency,
                       columns=[i for i in range(-1, templates_number)])

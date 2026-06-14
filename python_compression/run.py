@@ -329,6 +329,11 @@ if __name__ == "__main__":
 
     time2 = time.time()
 
+    # t1 is measured inside __main__ after all module imports have loaded.
+    # time2 - t1 therefore excludes Python interpreter startup and import time,
+    # giving the pure algorithmic wall time (training + segmenting + compression).
+    print("LOGSHRINK_ALGO_WALL_S: {:.4f}".format(time2 - t1))
+
     print("{} Main finished, total time cost: {} , error num: {}".format(
         compress_outdir, time2 - time_t1, gl_errorNum))
 
